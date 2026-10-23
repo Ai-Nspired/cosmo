@@ -70,10 +70,12 @@ export default function MasterLayer() {
             </div>
           ) : (
             <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-accent/30 pt-5">
-              <p className="text-[15px] text-muted">{has ? "None of your numbers stayed whole. Read about them anyway:" : "Read about the three master numbers:"}</p>
-              {[11, 22, 33].map((n) => (
-                <Link key={n} to={numberPath(n)} className="num inline-flex min-h-[44px] items-center text-[18px] font-[550] text-accent hover:text-ink">{n}</Link>
-              ))}
+              <p className="basis-full text-[15px] text-muted md:basis-auto">{has ? "None of your numbers stayed whole. Read about them anyway:" : "Read about the three master numbers:"}</p>
+              <div className="flex gap-5">
+                {[11, 22, 33].map((n) => (
+                  <Link key={n} to={numberPath(n)} className="num inline-flex min-h-[44px] min-w-[44px] items-center text-[18px] font-[550] text-accent hover:text-ink">{n}</Link>
+                ))}
+              </div>
             </div>
           )}
           <ArrowLink to="/method" className="mt-4">Read the master-number method</ArrowLink>

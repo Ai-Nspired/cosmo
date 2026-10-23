@@ -123,17 +123,17 @@ export default function ProfileHero({ sectionRef, showForm, onEdit, onDone, edit
   }), [has, computed]);
 
   return (
-    <section ref={sectionRef} aria-label="Profile input" className="relative overflow-hidden">
+    <section ref={sectionRef} aria-label="Profile input" className="relative overflow-hidden pb-6 md:pb-0">
       <div className="midnight-glow pointer-events-none absolute inset-0" aria-hidden="true" />
-      <Container className="relative md:grid md:h-[680px] md:grid-cols-12 md:items-center">
-        <div className="relative -mx-4 h-[42vh] min-h-[280px] sm:-mx-6 md:absolute md:inset-y-0 md:left-[36%] md:right-0 md:mx-0 md:h-auto">
+      <Container className="relative md:grid md:h-[760px] md:grid-cols-12 md:items-center">
+        <div className="relative -mx-4 h-[260px] sm:-mx-6 md:absolute md:inset-y-0 md:left-[38%] md:right-[2%] md:mx-0 md:h-auto">
           <Scene
             load={() => import("../../three/ProfileRings.jsx")}
             poster={RINGS_POSTER}
             className="absolute inset-0"
             lighting="cool"
             accent="#2DD4A3"
-            camera={{ position: [0, 0, 7.4], fov: 35 }}
+            camera={{ position: [0, 0, 9], fov: 35 }}
             effects={{ bloom: 0.55 }}
             mobile="lite"
             sceneProps={sceneProps}
