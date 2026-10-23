@@ -32,7 +32,7 @@ export default function About() {
       <AboutRules />
 
       <section className="border-t border-line">
-        <Container className="py-14 md:py-20">
+        <Container className="pb-28 pt-14 md:py-20">
           <Reveal>
             <SectionHeading title="Made for a daily check-in" lead="Most people come once out of curiosity. Many return for Day's Vibe, or to compare themselves with a friend or partner." />
             <div className="mt-8 max-w-2xl"><Disclaimer /></div>

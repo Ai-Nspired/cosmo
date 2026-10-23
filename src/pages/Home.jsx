@@ -1,16 +1,19 @@
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router";
 import { Page, toast, scrollToSection } from "@wron/kit";
 import { useProfile } from "../components/ProfileProvider";
 import { validateInput } from "../lib/engine";
 import ProfileHero from "../components/home/ProfileHero";
-import IdentityRail from "../components/home/IdentityRail";
-import SystemReadings from "../components/home/SystemReadings";
-import CoreConstellation from "../components/home/CoreConstellation";
-import MasterLayer from "../components/home/MasterLayer";
-import NextActions from "../components/home/NextActions";
 import EmptyPreview from "../components/home/EmptyPreview";
 import MobileAction from "../components/home/MobileAction";
+import PremiumPrompt from "../components/home/PremiumPrompt";
+
+// Heavy, profile-only sections (they pull in all the guide text) load after the first paint.
+const IdentityRail = lazy(() => import("../components/home/IdentityRail"));
+const SystemReadings = lazy(() => import("../components/home/SystemReadings"));
+const CoreConstellation = lazy(() => import("../components/home/CoreConstellation"));
+const MasterLayer = lazy(() => import("../components/home/MasterLayer"));
+const NextActions = lazy(() => import("../components/home/NextActions"));
 
 const JSON_LD = {
   "@context": "https://schema.org",
@@ -71,18 +74,22 @@ export default function Home() {
       <div className="pb-24 md:pb-0">
         <ProfileHero sectionRef={heroRef} showForm={showForm} onEdit={startEdit} onDone={() => setEditing(false)} editing={editing && has} />
         {has ? (
-          <>
+          <Suspense fallback={<div className="min-h-[60vh]" aria-busy="true" />}>
             <IdentityRail onEdit={startEdit} />
             <SystemReadings />
             <CoreConstellation />
             <MasterLayer />
             <NextActions />
-          </>
+            <PremiumPrompt />
+          </Suspense>
         ) : (
           <>
             <EmptyPreview />
-            <MasterLayer />
-            <NextActions />
+            <Suspense fallback={<div className="min-h-[40vh]" aria-busy="true" />}>
+              <MasterLayer />
+              <NextActions />
+            </Suspense>
+            <PremiumPrompt />
           </>
         )}
       </div>

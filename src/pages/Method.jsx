@@ -4,6 +4,7 @@ import RingsSVG from "../components/RingsSVG";
 import MethodNav from "../components/method/MethodNav";
 import { LunarSection, SunSection, NumberSection } from "../components/method/MethodSections";
 import { LettersSection, ScoringSection } from "../components/method/MethodTables";
+import MethodPremium from "../components/method/MethodPremium";
 
 export default function Method() {
   return (
@@ -36,6 +37,7 @@ export default function Method() {
           <NumberSection />
           <LettersSection />
           <ScoringSection />
+          <MethodPremium />
           <Disclaimer />
         </div>
       </Container>

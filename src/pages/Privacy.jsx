@@ -14,9 +14,9 @@ export default function Privacy() {
         <Container className="grid items-center gap-8 py-12 md:grid-cols-12 md:py-20">
           <div className="md:col-span-8">
             <MonoLabel className="mb-4">Privacy · Plain words</MonoLabel>
-            <h1 className="display text-[clamp(2.25rem,6vw,4.5rem)] text-ink">Your details stay on this device.</h1>
+            <h1 className="display text-[clamp(2.25rem,6vw,4.5rem)] text-ink">Free details stay on this device.</h1>
             <p className="mt-6 max-w-2xl text-[17px] leading-[1.6] text-muted">
-              Your name and birthdate are used to calculate your profile in your browser. We do not send them to a server, and we do not keep a copy.
+              On the free profile, your name and birthdate are used in your browser. We do not send them to a server, and we do not keep a copy. Premium accounts are explained below.
             </p>
           </div>
           <div className="hidden md:col-span-4 md:block">

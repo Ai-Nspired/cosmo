@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { useSearchParams } from "react-router";
 import { Page } from "@wron/kit";
 import { cn } from "@wron/kit";
-import { Container, Button, Panel } from "../components/ui";
+import { Container, Button, Panel, ArrowLink } from "../components/ui";
 import { OrbitMark } from "../components/RingsSVG";
 import { useProfile } from "../components/ProfileProvider";
 import VibeBoard from "../components/explore/VibeBoard";
@@ -71,6 +71,10 @@ export default function Explore() {
             ) : (
               <div role="tabpanel" id="panel-compatibility" aria-labelledby="tab-compatibility"><Compat params={params} /></div>
             )}
+          </div>
+          <div className="mx-auto mt-10 flex max-w-[1200px] flex-col gap-1 border-t border-line pt-5 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-[15px] text-muted">Want all nine compatibility factors, including Moon and Rising?</p>
+            <ArrowLink to="/premium">See Premium</ArrowLink>
           </div>
         </Container>
       </div>
