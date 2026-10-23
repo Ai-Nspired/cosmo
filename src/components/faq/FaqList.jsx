@@ -28,7 +28,7 @@ function Item({ item, index, open, onToggle }) {
         aria-labelledby={`${id}-btn`}
         className={cn("grid transition-[grid-template-rows] duration-300 ease-out", open ? "grid-rows-[1fr]" : "grid-rows-[0fr]")}
       >
-        <div className="overflow-hidden">
+        <div className="min-h-0 overflow-hidden" aria-hidden={!open} inert={!open ? "" : undefined}>
           <p className="max-w-3xl pb-6 pl-9 pr-8 text-[17px] leading-[1.6] text-muted">{item.a}</p>
         </div>
       </div>
