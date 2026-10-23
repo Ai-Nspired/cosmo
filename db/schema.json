@@ -1,0 +1,25 @@
+{
+  "tables": [
+    {
+      "name": "member_profiles",
+      "access": "community",
+      "columns": [
+        { "name": "display_name", "type": "text" },
+        { "name": "bio", "type": "text" },
+        { "name": "area", "type": "text" },
+        { "name": "looking_for", "type": "text" },
+        { "name": "reach_me", "type": "text" },
+        { "name": "age_confirmed", "type": "boolean" },
+        { "name": "sun", "type": "integer" },
+        { "name": "moon", "type": "integer" },
+        { "name": "rising", "type": "integer" },
+        { "name": "animal", "type": "integer" },
+        { "name": "element", "type": "text" },
+        { "name": "life_path", "type": "integer" },
+        { "name": "expression", "type": "integer" },
+        { "name": "soul_urge", "type": "integer" },
+        { "name": "personality", "type": "integer" }
+      ]
+    }
+  ]
+}
