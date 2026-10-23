@@ -1,0 +1,22 @@
+{
+  "name": "Cosmic Profile & Synergy",
+  "description": "Enter your name and birthdate to see your Chinese zodiac, sun sign, Life Path and Core Numbers, plus a daily vibe and two-way compatibility.",
+  "lang": "en",
+  "favicon": "✦",
+  "image": "https://firebasestorage.googleapis.com/v0/b/wron-ai.firebasestorage.app/o/site-assets%2Fsite-1792772208663%2F39422b2a-1747-4e21-a073-47ddd7a879a9.webp?alt=media&token=219378b9-06d5-4408-b694-f2ed17f0eaae",
+  "theme": {
+    "colors": {
+      "bg": "#0B0D10",
+      "surface": "#12161B",
+      "ink": "#EEF2F6",
+      "muted": "#8C96A3",
+      "line": "#28313B",
+      "primary": "#2DD4A3",
+      "primaryInk": "#04140F",
+      "accent": "#A78BFA"
+    },
+    "fonts": { "display": "Geist", "body": "Geist", "mono": "Geist Mono" },
+    "radius": "6px",
+    "scheme": "dark"
+  }
+}
