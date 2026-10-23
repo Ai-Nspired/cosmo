@@ -57,6 +57,8 @@ async function call(action, body, init = {}) {
   const headers = { "X-Wron-Device": deviceId() };
   const session = storage.get(SESSION_KEY);
   if (session) headers["X-Wron-Session"] = session;
+  const pass = ownerPass();
+  if (pass) headers["X-Wron-Owner"] = pass;
   if (isPreview) headers["X-Wron-Preview"] = previewPass || "1";
   const check = humanCheck(action, body);
   if (check) {
@@ -311,6 +313,7 @@ function setUser(u) {
 let checking = null;
 function checkUser() {
   if (currentUser !== undefined || checking || isServer) return;
+  if (returning) { checking = returning.finally(() => { checking = null; if (currentUser === undefined) checkUser(); }); return; }
   if (!storage.get(SESSION_KEY)) { setUser(null); return; }
   checking = call("auth", { action: "me" })
     .then((r) => setUser(r.user || null))
@@ -329,6 +332,20 @@ export const auth = {
   signUp: ({ email, password, name, inviteCode } = {}) => call("auth", { action: "signup", email, password, name, inviteCode }).then(remember),
   /** Sign in with email and password. Returns the user. */
   signIn: ({ email, password } = {}) => call("auth", { action: "signin", email, password }).then(remember),
+  /**
+   * Sign in with Google, from a click: the page goes to Google and comes back here signed in (useUser() then has
+   * the user). Works on the published site once the owner has connected Google sign-in in Wron; throws a CloudError
+   * with a message to show otherwise.
+   */
+  signInWithGoogle: async () => {
+    if (isServer) throw new CloudError("Not available while prerendering.", "server", 0);
+    if (isPreview) throw new CloudError("Google sign-in works on the published website, not in the preview.", "preview", 0);
+    const back = window.location.href.split("#")[0];
+    const start = await call("auth", { action: "google_start", ret: back });
+    try { window.sessionStorage.setItem(GOOGLE_KEY, start.requestId); } catch { /* the code alone can't sign in: see below */ }
+    window.location.assign(start.url);
+    return new Promise(() => {}); // the page is leaving
+  },
   /** Sign out on this device. */
   signOut: async () => {
     try { await call("auth", { action: "signout" }); } catch { /* signed out locally regardless */ }
@@ -338,6 +355,144 @@ export const auth = {
   /** The signed-in visitor, or null. */
   user: () => currentUser ?? null,
 };
+
+// ── A site in two or more languages ───────────────────────────────────────
+// Translating adds a language and keeps the site's own (owner, 2026-10-23: "both the version should work
+// somehow ... like English and spanish").
+
+const LANG_KEY = "wron:lang";
+let langNow = null;
+const langListeners = new Set();
+
+function firstLanguage(list) {
+  const saved = storage.get(LANG_KEY);
+  if (saved && list.includes(saved)) return saved;
+  const wanted = typeof navigator === "undefined" ? [] : (navigator.languages?.length ? navigator.languages : [navigator.language]);
+  for (const w of wanted) {
+    const hit = list.find((l) => l.slice(0, 2).toLowerCase() === String(w || "").slice(0, 2).toLowerCase());
+    if (hit) return hit;
+  }
+  return list[0];
+}
+
+/**
+ * The visitor's language, out of the site's own: const [lang, setLang] = useLanguage(["en", "es"]). The first is
+ * the site's own language (what search engines see). A visitor's pick is remembered on this device; a first visit
+ * gets the browser's language when the site has it. Keeps <html lang> right.
+ */
+export function useLanguage(languages) {
+  const list = Array.isArray(languages) && languages.length ? languages : ["en"];
+  const lang = useSyncExternalStore(
+    (l) => { langListeners.add(l); return () => langListeners.delete(l); },
+    () => (langNow && list.includes(langNow) ? langNow : (langNow = firstLanguage(list))),
+    () => list[0],
+  );
+  useEffect(() => { if (!isServer) document.documentElement.lang = lang; }, [lang]);
+  const setLang = useCallback((next) => {
+    if (!list.includes(next)) return;
+    langNow = next;
+    storage.set(LANG_KEY, next);
+    langListeners.forEach((l) => l());
+  }, [list]);
+  return [lang, setLang];
+}
+
+// ── The owner, on their own site ──────────────────────────────────────────
+// "Sign in as owner" opens Wron, where the owner is signed in; Wron checks they own this site and the page gets
+// a pass for 12 hours that the backend checks on every request (owner-pass.ts). Nothing in this page decides who
+// the owner is: an email compared here would be readable, and fakeable, by every visitor.
+
+const OWNER_KEY = `wron:owner:${siteId}`;
+let ownerNow; // undefined until known
+const ownerListeners = new Set();
+function setOwner(v) { ownerNow = v; ownerListeners.forEach((l) => l()); }
+
+function ownerPass() {
+  const raw = storage.get(OWNER_KEY);
+  if (!raw) return null;
+  try {
+    const { pass, expiresAt } = JSON.parse(raw);
+    if (typeof pass === "string" && expiresAt > Date.now() + 60_000) return pass;
+  } catch { /* unreadable: dropped below */ }
+  storage.remove(OWNER_KEY);
+  return null;
+}
+
+let checkingOwner = null;
+function checkOwner() {
+  if (isServer) return;
+  // In the builder's preview the owner is the one looking.
+  if (isPreview) { setOwner(true); return; }
+  if (returning) { returning.finally(() => { if (ownerNow === undefined) checkOwner(); }); return; }
+  if (!ownerPass()) { setOwner(false); return; }
+  checkingOwner ??= call("auth", { action: "owner_check" })
+    .then((r) => setOwner(r.owner === true))
+    .catch(() => setOwner(false))
+    .finally(() => { checkingOwner = null; });
+}
+
+export const owner = {
+  /** Sign in as the site's owner, from a click: the page goes to Wron, where the owner is signed in, and comes back. */
+  signIn: async () => {
+    if (isServer) throw new CloudError("Not available while prerendering.", "server", 0);
+    if (isPreview) { setOwner(true); return true; }
+    if (!apiBase || !siteId) throw new CloudError("This site isn't connected to Wron yet.", "not_connected", 0);
+    const page = new URL("/web-builder/site-owner", new URL(apiBase).origin);
+    page.searchParams.set("siteId", siteId);
+    page.searchParams.set("origin", window.location.origin);
+    page.searchParams.set("back", window.location.pathname + window.location.search);
+    window.location.assign(page.toString());
+    return new Promise(() => {}); // the page is leaving
+  },
+  /** Stop being the owner on this device. */
+  signOut: () => { storage.remove(OWNER_KEY); setOwner(isPreview); },
+};
+
+/** { owner, loading }: whether the person here is the site's owner, as Wron's backend confirms it. */
+export function useOwner() {
+  const v = useSyncExternalStore(
+    (l) => { ownerListeners.add(l); return () => ownerListeners.delete(l); },
+    () => ownerNow,
+    () => undefined,
+  );
+  useEffect(() => { if (ownerNow === undefined) checkOwner(); }, []);
+  return { owner: v === true, loading: v === undefined };
+}
+
+/** Renders children only for the site's owner; `fallback` (a "Sign in as owner" button, say) for everyone else. */
+export function OwnerOnly({ children, fallback = null }) {
+  const { owner: isOwner, loading } = useOwner();
+  if (loading) return null;
+  return isOwner ? children : fallback;
+}
+
+// ── Coming back from Google or from Wron ──────────────────────────────────
+// Both sign-ins leave the page and come back with a one-time code in the address's #fragment (never sent to a
+// server). Google's is traded with the request id this page kept before it left, so a sign-in link sent to someone
+// else does nothing; the owner's is traded at this site's own address only.
+
+const GOOGLE_KEY = `wron:google:${siteId}`;
+let returning = (() => {
+  if (isServer || isPreview || typeof window === "undefined") return null;
+  const hash = window.location.hash || "";
+  const google = /[#&]wron_google=([^&]+)/.exec(hash);
+  const ownerCode = /[#&]wron_owner=([^&]+)/.exec(hash);
+  if (!google && !ownerCode) return null;
+  // The code goes from the address bar at once, whatever happens next.
+  try { window.history.replaceState(window.history.state, "", window.location.pathname + window.location.search); } catch { /* old browser */ }
+  if (google) {
+    let requestId = null;
+    try { requestId = window.sessionStorage.getItem(GOOGLE_KEY); window.sessionStorage.removeItem(GOOGLE_KEY); } catch { /* none */ }
+    if (!requestId) return null;
+    return call("auth", { action: "google_finish", requestId, code: decodeURIComponent(google[1]) }).then(remember).catch(() => null);
+  }
+  return call("auth", { action: "owner_redeem", code: decodeURIComponent(ownerCode[1]) })
+    .then((r) => { storage.set(OWNER_KEY, JSON.stringify({ pass: r.pass, expiresAt: r.expiresAt })); setOwner(true); })
+    .catch(() => setOwner(false));
+})();
+// Done is done: the checks that waited on the return run normally after it, once. Left set, they waited on it again
+// for ever, and the page froze (the jewelry site's owner area, 2026-10-23).
+if (returning) returning = returning.finally(() => { returning = null; });
 
 /** { user, loading }: user is null when signed out. Re-renders on sign-in and sign-out. */
 export function useUser() {
@@ -520,6 +675,13 @@ export const ai = {
    *   const reply = await ai.chat([{ role: "user", content: "Suggest a gift under $50" }], { system: "You are a helpful shop assistant." })
    */
   chat: (messages, { system } = {}) => call("ai", { messages, system }).then((r) => r.text || ""),
+  /**
+   * The owner's AI product photo, from their own uploaded photo(s) of the item: the item stays exactly as it is,
+   * only the light, background and setting change. Owner only (inside <OwnerOnly>), on their OpenAI key, one
+   * picture per call (20 to 60 seconds; run several at once for several shots). Returns the new picture's URL.
+   *   const url = await ai.image({ photos: [uploadedUrl], prompt: "on white marble, soft daylight, close-up" })
+   */
+  image: ({ photos, prompt } = {}) => call("ai", { op: "image", photos: Array.isArray(photos) ? photos : [photos], prompt }).then((r) => r.url),
 };
 
 // ── Visits ──────────────────────────────────────────────────────────────────

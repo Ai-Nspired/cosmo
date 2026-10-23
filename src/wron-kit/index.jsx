@@ -20,6 +20,7 @@ export { Widget, Embed } from "./widgets.jsx";
 export {
   submitForm, useForm, SpamTrap, table, useTable, useRow, auth, useUser, SignedIn, SignedOut, RequireSignIn,
   upload, checkout, useCart, money, useCheckoutResult, useOrder, ai, CloudError, appointments, useAvailability,
+  owner, useOwner, OwnerOnly, useLanguage,
 } from "./cloud.js";
 export { useLive, freshness } from "./live.js";
 export {
