@@ -1,0 +1,40 @@
+@layer base {
+  html { background: #0B0D10; color-scheme: dark; }
+  body { font-feature-settings: "ss01"; -webkit-font-smoothing: antialiased; }
+  ::selection { background: rgba(167, 139, 250, 0.35); color: #EEF2F6; }
+  :focus-visible { outline: 2px solid #2DD4A3; outline-offset: 2px; }
+  input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.75); cursor: pointer; }
+}
+
+@layer components {
+  /* Display headings: Geist 600, -0.04em, 0.98 */
+  .display { font-family: Geist, ui-sans-serif, system-ui, sans-serif; font-weight: 600; letter-spacing: -0.04em; line-height: 0.98; }
+  .h-section { font-weight: 550; letter-spacing: -0.025em; line-height: 1.08; font-size: clamp(1.75rem, 2.6vw, 2.5rem); }
+  .mono-label { font-family: "Geist Mono", ui-monospace, monospace; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: #8C96A3; }
+  .num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+  .glyph { font-family: "Segoe UI Symbol", "Apple Symbols", "Noto Sans Symbols", "DejaVu Sans", sans-serif; font-variant-emoji: text; }
+
+  /* Hover light sweep across a row's border (300ms) */
+  .sweep { position: relative; overflow: hidden; isolation: isolate; }
+  .sweep::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none; z-index: -1;
+    background: linear-gradient(100deg, transparent 30%, rgba(45, 212, 163, 0.10) 50%, transparent 70%);
+    transform: translateX(-110%);
+  }
+  .sweep:hover::after { transform: translateX(110%); transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1); }
+  .sweep-violet::after { background: linear-gradient(100deg, transparent 30%, rgba(167, 139, 250, 0.14) 50%, transparent 70%); }
+
+  .glow-teal { text-shadow: 0 0 24px rgba(45, 212, 163, 0.45); }
+  .glow-violet { text-shadow: 0 0 28px rgba(167, 139, 250, 0.55); }
+  .ring-violet { box-shadow: 0 0 0 1px rgba(167, 139, 250, 0.55), 0 0 28px -6px rgba(167, 139, 250, 0.55); }
+
+  .midnight-glow { background: radial-gradient(60% 60% at 70% 45%, rgba(45, 212, 163, 0.10), transparent 70%), radial-gradient(40% 40% at 60% 55%, rgba(167, 139, 250, 0.07), transparent 70%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sweep::after { display: none; }
+  .spin-slow { animation: none !important; }
+}
+
+@keyframes spin-slow { to { transform: rotate(360deg); } }
+.spin-slow { animation: spin-slow 120s linear infinite; transform-origin: center; }
