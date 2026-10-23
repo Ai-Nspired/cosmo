@@ -1,6 +1,6 @@
 import { NavLink, Link, Outlet, useLocation } from "react-router";
 import { Suspense, useEffect } from "react";
-import { Menu, X, UserRound, Compass } from "lucide-react";
+import { Menu, X, UserRound, Compass, Sparkles } from "lucide-react";
 import { Sheet, useDisclosure, cn, CookieSettingsLink } from "@wron/kit";
 import { SmoothScroll } from "@wron/kit/scroll";
 import Logo, { StarMark } from "./Logo";
@@ -9,6 +9,7 @@ import { ProfileProvider } from "./ProfileProvider";
 const APP_NAV = [
   { to: "/", label: "Profile", end: true },
   { to: "/explore", label: "Explore" },
+  { to: "/premium", label: "Premium" },
 ];
 const LEARN_NAV = [
   { to: "/guides", label: "Guides" },
@@ -81,7 +82,7 @@ function Header() {
           </ul>
           <p className="mono-label mt-8">Learn</p>
           <ul className="mt-2 border-t border-line">
-            {[...LEARN_NAV, { to: "/about", label: "About" }].map((l) => (
+            {[...LEARN_NAV, { to: "/about", label: "About" }, { to: "/account", label: "Account" }].map((l) => (
               <li key={l.to} className="border-b border-line">
                 <NavLink to={l.to} className={({ isActive }) => cn("flex min-h-[52px] items-center text-lg font-[550]", isActive ? "text-primary" : "text-ink")}>{l.label}</NavLink>
               </li>
@@ -99,10 +100,11 @@ function BottomNav() {
   const items = [
     { to: "/", label: "Profile", icon: UserRound, end: true },
     { to: "/explore", label: "Explore", icon: Compass },
+    { to: "/premium", label: "Premium", icon: Sparkles },
   ];
   return (
-    <nav aria-label="Profile and Explore" className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-bg/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden">
-      <ul className="grid h-16 grid-cols-2">
+    <nav aria-label="Main" className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-bg/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden">
+      <ul className="grid h-16 grid-cols-3">
         {items.map(({ to, label, icon: Icon, end }) => (
           <li key={to}>
             <NavLink
@@ -143,12 +145,12 @@ function Footer() {
           <Logo />
           <p className="mt-4 max-w-xs text-[15px] leading-relaxed text-muted">For entertainment and personal reflection, not prediction or scientific assessment.</p>
         </div>
-        <FooterCol title="Explore" links={[{ to: "/", label: "Profile" }, { to: "/explore?tab=vibe", label: "Day's Vibe" }, { to: "/explore?tab=compatibility", label: "Compatibility" }]} />
+        <FooterCol title="Explore" links={[{ to: "/", label: "Profile" }, { to: "/explore?tab=vibe", label: "Day's Vibe" }, { to: "/explore?tab=compatibility", label: "Compatibility" }, { to: "/premium", label: "Premium" }, { to: "/premium/matches", label: "Cosmic Matches" }]} />
         <FooterCol title="Learn" links={[{ to: "/guides", label: "Guides" }, { to: "/method", label: "Method" }, { to: "/faq", label: "FAQ" }]} />
-        <FooterCol title="Information" links={[{ to: "/about", label: "About" }, { to: "/privacy", label: "Privacy" }, { to: "/terms", label: "Terms" }]} />
+        <FooterCol title="Information" links={[{ to: "/about", label: "About" }, { to: "/account", label: "Account" }, { to: "/privacy", label: "Privacy" }, { to: "/terms", label: "Terms" }]} />
       </div>
       <div className="mx-auto flex max-w-[1440px] flex-col gap-3 border-t border-line px-4 py-6 pb-24 sm:px-6 md:flex-row md:items-center md:justify-between md:px-8 md:pb-6">
-        <p className="font-mono text-[12px] tracking-[0.06em] text-muted">Calculated in your browser. Your details stay on this device.</p>
+        <p className="font-mono text-[12px] tracking-[0.06em] text-muted">Free profile: calculated in your browser, kept on this device. Premium: see Privacy.</p>
         <CookieSettingsLink className="min-h-[44px] text-left text-[14px] text-muted hover:text-ink md:min-h-0">Cookie settings</CookieSettingsLink>
       </div>
     </footer>
