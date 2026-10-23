@@ -9,6 +9,11 @@ const SunSignGuide = lazy(() => import("./pages/SunSignGuide"));
 const ChineseZodiacGuide = lazy(() => import("./pages/ChineseZodiacGuide"));
 const NumberGuide = lazy(() => import("./pages/NumberGuide"));
 const CoreNumberGuide = lazy(() => import("./pages/CoreNumberGuide"));
+const Premium = lazy(() => import("./pages/Premium"));
+const PremiumChart = lazy(() => import("./pages/PremiumChart"));
+const PremiumCompare = lazy(() => import("./pages/PremiumCompare"));
+const Matches = lazy(() => import("./pages/Matches"));
+const Account = lazy(() => import("./pages/Account"));
 const Method = lazy(() => import("./pages/Method"));
 const Faq = lazy(() => import("./pages/Faq"));
 const About = lazy(() => import("./pages/About"));
@@ -27,6 +32,11 @@ export default function App() {
         <Route path="/guides/chinese-zodiac/:animal" element={<ChineseZodiacGuide />} />
         <Route path="/guides/numbers/:number" element={<NumberGuide />} />
         <Route path="/guides/core-numbers/:type" element={<CoreNumberGuide />} />
+        <Route path="/premium" element={<Premium />} />
+        <Route path="/premium/chart" element={<PremiumChart />} />
+        <Route path="/premium/compare" element={<PremiumCompare />} />
+        <Route path="/premium/matches" element={<Matches />} />
+        <Route path="/account" element={<Account />} />
         <Route path="/method" element={<Method />} />
         <Route path="/faq" element={<Faq />} />
         <Route path="/about" element={<About />} />
