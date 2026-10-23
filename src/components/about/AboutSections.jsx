@@ -33,7 +33,7 @@ export function AboutRings() {
 
 const RULES = [
   { k: "Entertainment only", v: "Astrology and numerology are not science and cannot predict events. Readings are for fun and reflection." },
-  { k: "Your details stay here", v: "Everything is calculated in your browser. If you save, your profile and saved people live in this browser's storage on this device. Nothing is sent to a server." },
+  { k: "Your details stay here", v: "The free profile is calculated in your browser. If you save, your profile and saved people live in this browser's storage on this device. Premium uses an account, and the Privacy page lists exactly what it stores." },
   { k: "Stated rules", v: "Every calculation is written out on the Method page, including how Destiny differs from Expression and how master numbers are kept." },
   { k: "Honest limits", v: "Birth years from 1924 to 2035 are supported. Outside that range the tool says so instead of guessing an animal." },
 ];
