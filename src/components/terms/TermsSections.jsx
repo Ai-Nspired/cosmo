@@ -10,12 +10,17 @@ export const TERMS = [
     "Please do not copy the site's readings in bulk, scrape it, or try to break it.",
   ] },
   { id: "data", title: "Your details", body: [
-    "Your name and birthdate are calculated in your browser. If you choose to save, they are kept in this browser's local storage on your device. Reset removes them.",
+    "On the free profile, your name and birthdate are calculated in your browser. If you choose to save, they are kept in this browser's local storage on your device. Reset removes them.",
     "If your browser blocks storage, the tool still works for the current session only. See the Privacy page for more.",
   ] },
   { id: "accuracy", title: "Accuracy and limits", body: [
     "Results follow the rules on the Method page. Sun sign dates can differ by a day in some years, and the Chinese zodiac uses a table of Lunar New Year dates for birth years 1924 to 2035. Outside that range the tool says so instead of guessing.",
     "Other sources may use different methods, so you may see different results elsewhere. We make no promise that the tool is free of errors or always available.",
+  ] },
+  { id: "premium", title: "Premium accounts and Cosmic Matches", body: [
+    "Premium and Cosmic Matches are for people aged 18 and over. You must give an accurate age confirmation and use your own details.",
+    "A member card is public to anyone who visits the site's data. Do not post anything unlawful, hateful, or private to someone else, and do not use Cosmic Matches to harass, scam or pressure anyone. The owner may remove a card or close an account that breaks these rules.",
+    "Scores are entertainment. They do not predict how a relationship will go, and we do not check who members are. Meet in public first and tell a friend. Premium is in early access, and its features and terms may change before billing begins.",
   ] },
   { id: "content", title: "Content and ownership", body: [
     "The readings, design and calculation rules on this site belong to the site's owner. You may share your own profile or comparison link, or download your profile image, for personal use.",
