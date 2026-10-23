@@ -6,6 +6,7 @@ export const STEPS = [
   ["numbers", "Numbers and master numbers"],
   ["letters", "Letter table"],
   ["scoring", "Day's Vibe and compatibility"],
+  ["premium", "Premium: Moon, Rising, nine factors"],
 ];
 
 export default function MethodNav() {
